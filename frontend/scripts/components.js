@@ -101,6 +101,73 @@ async function initializeComponents() {
             "componentsLoaded"
         )
     );
+
+    // initialize mobile menu functionality
+    initializeMobileMenu();
+}
+
+// mobile menu functionality
+function initializeMobileMenu() {
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const mobileCloseBtn = document.getElementById('mobile-close-btn');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (!mobileMenuBtn || !mobileMenuOverlay || !mobileCloseBtn) {
+        console.warn('Mobile menu elements not found');
+        return;
+    }
+
+    // open mobile menu
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        mobileMenuOverlay.classList.add('active');
+        mobileMenuBtn.classList.add('hidden');
+        document.body.style.overflow = 'hidden';
+    });
+
+    // close mobile menu via close button
+    mobileCloseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMobileMenu();
+    });
+
+    // close mobile menu when clicking on links
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeMobileMenu();
+        });
+    });
+
+    // close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (mobileMenuOverlay.classList.contains('active')) {
+            if (!mobileMenuOverlay.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                closeMobileMenu();
+            }
+        }
+    });
+
+    // close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenuOverlay.classList.contains('active')) {
+            closeMobileMenu();
+        }
+    });
+}
+
+function closeMobileMenu() {
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    if (mobileMenuOverlay) {
+        mobileMenuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    if (mobileMenuBtn) {
+        mobileMenuBtn.classList.remove('hidden');
+    }
 }
 
 // init
