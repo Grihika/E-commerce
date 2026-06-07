@@ -46,6 +46,14 @@
     color: var(--primary-color, #088178);
 }
 
+/* Active underline for current page */
+#navbar-links li a.active::after {
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color, #088178);
+}
+
+
 /* Hide Hamburger Button on Desktop */
 #mobile-menu-btn {
     display: none;
@@ -69,6 +77,14 @@
     #header {
         padding: 20px 30px;
     }
+
+    /* Animate mobile menu slide-in smoothly */
+    #navbar-links {
+        will-change: transform;
+        transform: translateX(0);
+        transition: right 0.3s ease, transform 0.3s ease;
+    }
+
 
     #mobile-menu-btn {
         display: block;

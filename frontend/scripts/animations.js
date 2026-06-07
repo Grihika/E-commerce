@@ -9,44 +9,54 @@
  * Uses Intersection Observer API for optimal performance
  */
 function initializeScrollAnimations() {
-    // Automatically add animation helpers to home sections and cards
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Mark eligible elements (idempotent)
     document.querySelectorAll(
         '#hero, #feature, #product1, #banner, #new-arrivals, #recently-viewed, #sm-banner, #banner3, #newsletter, #feature .fe-box, #product1 .pro, #new-arrivals .pro, #recently-viewed .pro'
-    ).forEach(el => {
-        el.classList.add('animate-on-scroll');
-    });
+    ).forEach(el => el.classList.add('animate-on-scroll'));
 
-    // Check if Intersection Observer is supported
-    if (!('IntersectionObserver' in window)) {
-        // Fallback: add animation classes immediately for older browsers
-        document.querySelectorAll('.animate-on-scroll').forEach(el => {
-            el.classList.add('in-view');
-        });
+    // Reduced motion: show everything immediately
+    if (prefersReduced) {
+        document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('in-view'));
         return;
     }
 
-    // Configure Intersection Observer options
-    const observerOptions = {
-        threshold: 0.1,  // Trigger when 10% of element is visible
-        rootMargin: '0px 0px -50px 0px'  // Start animations 50px before element enters viewport
-    };
+    if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('in-view'));
+        return;
+    }
 
-    // Create Intersection Observer
-    const observer = new IntersectionObserver(function(entries) {
+    // Reuse a single observer instance if one exists
+    if (window.__homeObserver) {
+        try {
+            window.__homeObserver.disconnect();
+        } catch (_) {
+            // no-op
+        }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add animation class when element enters viewport
-                entry.target.classList.add('in-view');
-                // Stop observing once animated
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
+            if (!entry.isIntersecting) return;
 
-    // Observe all scroll-triggered animation elements
-    document.querySelectorAll('.animate-on-scroll').forEach(el => {
-        observer.observe(el);
+            const el = entry.target;
+
+            // Apply stagger if index exists
+            const index = Number(el.getAttribute('data-anim-index') || '0');
+            const stagger = Math.max(0, Math.min(0.06 * index, 0.6));
+
+            el.style.animationDelay = `${stagger}s`;
+            el.classList.add('in-view');
+            observer.unobserve(el);
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
+
+    window.__homeObserver = observer;
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 }
 
 /**
@@ -75,11 +85,16 @@ function addProductCardAnimations(containerSelector) {
  * Already handled by CSS, but can be enhanced with JS
  */
 function enhanceFeatureCards() {
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const featureBoxes = document.querySelectorAll('#feature .fe-box');
-    
+
     featureBoxes.forEach((box, index) => {
-        // Add smooth visibility with staggered timing
-        box.style.animation = `scaleInCenter 0.6s ease-out ${index * 0.05}s both`;
+        // Let scroll observer handle visibility; only set stagger.
+        box.setAttribute('data-anim-index', String(index));
+
+        if (prefersReduced) return;
+        // Ensure keyframe exists; delay set by observer.
+        box.style.willChange = 'transform, opacity';
     });
 }
 
@@ -119,24 +134,45 @@ function animateProductsOnLoad() {
  * Add subtle effects when page is scrolled
  */
 function enhanceNavbarAnimations() {
-    let lastScrollTop = 0;
     const navbar = document.getElementById('header');
+    const logoImg = document.querySelector('#header .logo, #header .logo img, #header img.logo');
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Logo fade-in on load
+    if (logoImg && !prefersReduced) {
+        logoImg.style.opacity = '0';
+        logoImg.style.transform = 'translateY(-4px)';
+        logoImg.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        requestAnimationFrame(() => {
+            logoImg.style.opacity = '1';
+            logoImg.style.transform = 'translateY(0)';
+        });
+    }
 
     if (!navbar) return;
 
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', () => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-        // Add subtle shadow effect when scrolled
         if (scrollTop > 10) {
             navbar.style.boxShadow = '0 5px 25px rgba(0, 0, 0, 0.1)';
             navbar.style.transition = 'box-shadow 0.3s ease-out';
         } else {
             navbar.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.06)';
         }
+    }, { passive: true });
 
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }, false);
+    // Cart icon hover scale
+    const cartLink = document.querySelector('#navbar-links .cart-link a');
+    if (cartLink && !prefersReduced) {
+        cartLink.style.transition = 'transform 0.2s ease';
+        cartLink.addEventListener('mouseenter', () => {
+            cartLink.style.transform = 'scale(1.03)';
+        }, { passive: true });
+        cartLink.addEventListener('mouseleave', () => {
+            cartLink.style.transform = 'scale(1)';
+        }, { passive: true });
+    }
 }
 
 /**
@@ -198,6 +234,15 @@ if (document.readyState === 'loading') {
 } else {
     initializeAllAnimations();
 }
+
+// Extra safety: re-run once after first paint to catch late DOM injections
+setTimeout(() => {
+    try {
+        initializeScrollAnimations();
+    } catch (e) {
+        // no-op
+    }
+}, 300);
 
 // Export functions for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
