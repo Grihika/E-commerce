@@ -142,6 +142,15 @@ function createProductCard(
                     >
                         Add Cart
                     </button>
+                    <button
+    type="button"
+    class="compare-btn"
+    data-id="${
+        product.id
+    }"
+>
+    Compare
+</button>
                 </div>
             </div>
         </div>

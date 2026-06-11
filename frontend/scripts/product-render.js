@@ -179,6 +179,13 @@ function createProductCardHTML(
             >
                 Add Cart
             </button>
+            <button
+    type="button"
+    class="compare-btn"
+    data-id="${encodeURIComponent(product.id)}"
+>
+    Compare
+</button>
         </div>
     `;
 }
@@ -570,6 +577,44 @@ function renderProduct(
     );
 }
 
+document.addEventListener("click", (event) => {
+
+    if (!event.target.classList.contains("compare-btn")) {
+        return;
+    }
+
+    const productId =
+        event.target.dataset.id;
+
+    let compareProducts =
+        JSON.parse(
+            localStorage.getItem("compareProducts")
+        ) || [];
+
+    if (
+        compareProducts.includes(productId)
+    ) {
+        alert("Product already selected");
+        return;
+    }
+
+    if (
+        compareProducts.length >= 3
+    ) {
+        alert("Maximum 3 products can be compared");
+        return;
+    }
+
+    compareProducts.push(productId);
+
+    localStorage.setItem(
+        "compareProducts",
+        JSON.stringify(compareProducts)
+    );
+
+    alert("Added for comparison");
+});
+
 // expose globally
 window.renderProduct =
     renderProduct;
@@ -585,3 +630,5 @@ window.renderProductRating =
 
 window.updateRecentlyViewed =
     updateRecentlyViewed;
+
+    window.allProducts = window.allProducts || [];

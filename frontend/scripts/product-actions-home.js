@@ -228,6 +228,34 @@ document.addEventListener(
             window.location.href =
                 `product.html?id=${id}`;
         }
+        const compareBtn =
+    event.target.closest(".compare-btn");
+
+if (compareBtn) {
+
+    event.preventDefault();
+
+    const id = compareBtn.dataset.id;
+
+    let compareProducts =
+        JSON.parse(
+            localStorage.getItem("compareProducts")
+        ) || [];
+
+    if (compareProducts.includes(id)) {
+        alert("Product already selected");
+        return;
+    }
+
+    compareProducts.push(id);
+
+    localStorage.setItem(
+        "compareProducts",
+        JSON.stringify(compareProducts)
+    );
+
+    alert("Added for comparison");
+}
     }
 );
 
