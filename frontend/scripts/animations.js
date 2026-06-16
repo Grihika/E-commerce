@@ -12,8 +12,8 @@ const AnimationController = (() => {
   };
 
   const observerOptions = {
-    threshold: 0.12,
-    rootMargin: "0px 0px -80px 0px",
+    threshold: 0.01,
+    rootMargin: "0px",
   };
 
   let observer = null;
@@ -174,19 +174,27 @@ function initializeScrollAnimations() {
 
 function addProductCardAnimations(containerSelector) {
   const container = document.querySelector(containerSelector);
-  if (!container) return;
+
+  if (!container) {
+    return;
+  }
 
   container
-    .querySelectorAll(".pro:not([data-anim-registered])")
+    .querySelectorAll(".pro")
     .forEach((card, index) => {
-      card.dataset.animRegistered = "true";
-      AnimationController.registerElement(card, {
-        variant: "fade-up",
-        index,
-      });
+      if (!card.dataset.animRegistered) {
+        card.dataset.animRegistered = "true";
+
+        AnimationController.registerElement(card, {
+          variant: "fade-up",
+          index,
+        });
+      }
     });
 
-  AnimationController.revealVisibleElements(containerSelector);
+  requestAnimationFrame(() => {
+    AnimationController.revealAll(containerSelector);
+  });
 }
 
 function animateProductsOnLoad() {
