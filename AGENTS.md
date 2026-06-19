@@ -12,11 +12,11 @@ Two independent packages (no monorepo tooling):
 
 ## Commands (run from `backend/`)
 
-| Action | Command |
-|--------|---------|
-| Dev server (nodemon) | `npm run dev` |
-| Start production | `npm start` |
-| Init DB from schema | `mysql -u root -p ecommerce < schema.sql` |
+| Action               | Command                                   |
+| -------------------- | ----------------------------------------- |
+| Dev server (nodemon) | `npm run dev`                             |
+| Start production     | `npm start`                               |
+| Init DB from schema  | `mysql -u root -p ecommerce < schema.sql` |
 
 ## Database
 
@@ -52,22 +52,14 @@ Two independent packages (no monorepo tooling):
 
 ## Installed skills
 
-| Skill | Usefulness in this repo |
-|-------|------------------------|
-| `nodejs-express-server` | Core skill; backend is Express 5, directly applicable to server setup and middleware patterns |
-| `nodejs-backend-patterns` | Covers auth, routing, error handling patterns used throughout `backend/` |
-| `mysql-best-practices` | DB is MySQL 8.0 with connection pooling; query safety, indexing, utf8mb4 concerns all apply |
-| `api-design-principles` | REST API with envelope responses; useful for new endpoint design and consistency |
-| `api-docs-generator` | No API docs exist; generates OpenAPI/JSDoc docs for Express routes |
-| `deploy-to-vercel` | Frontend deployed on Vercel (`frontend/vercel.json` exists) |
+| Skill                        | Usefulness in this repo                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------------------- |
 | `modern-javascript-patterns` | Vanilla JS frontend + Node.js backend; no framework or build step, so JS patterns matter |
-| `responsive-design` | E-commerce frontend in vanilla HTML/CSS must be mobile-friendly |
-| `css` | Vanilla CSS, no framework; useful for consistent styling patterns |
-| `semantic-html` | Vanilla HTML frontend; semantic markup aids SEO and accessibility for product/cart pages |
-| `core-web-vitals` | No build step means manual perf optimisation; LCP/CLS relevant for product listing pages |
-| `accessibility-compliance` | E-commerce checkout/forms need ARIA and keyboard support |
-| `wcag-audit-patterns` | Audit companion to accessibility-compliance; useful before release |
-| `conventional-commit` | `CONTRIBUTING.md` has no commit format requirement; optional if team adopts it |
+| `responsive-design`          | E-commerce frontend in vanilla HTML/CSS must be mobile-friendly                          |
+| `css`                        | Vanilla CSS, no framework; useful for consistent styling patterns                        |
+| `semantic-html`              | Vanilla HTML frontend; semantic markup aids SEO and accessibility for product/cart pages |
+| `accessibility-compliance`   | E-commerce checkout/forms need ARIA and keyboard support                                 |
+| `wcag-audit-patterns`        | Audit companion to accessibility-compliance; useful before release                       |
 
 ## What's not here
 
