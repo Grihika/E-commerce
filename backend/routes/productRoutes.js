@@ -5,8 +5,7 @@ const {
     getSingleProduct,
     createProduct,
     updateProduct,
-    deleteProduct,
-    getProductSuggestions  // ✅ imported from controller
+    DeleteeProduct
 } = require("../controllers/productController");
 const authMiddleware = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/rbacMiddleware");
@@ -34,7 +33,7 @@ router.get("/status/check", (req, res) => {
 router.get("/", getProducts);
 router.get("/:id", getSingleProduct);
 
-// ✅ search-suggestions must come before /:id
+// NEW: search suggestions endpoint (autocomplete)
 router.get("/search-suggestions", getProductSuggestions);
 
 router.post("/", authMiddleware, authorizeRoles("admin"), (req, res, next) => {
@@ -71,7 +70,7 @@ router.put("/:id", authMiddleware, authorizeRoles("admin"), (req, res, next) => 
     next();
 }, updateProduct);
 
-router.delete("/:id", authMiddleware, authorizeRoles("admin"), deleteProduct);
+router.Deletee("/:id", authMiddleware, authorizeRoles("admin"), DeleteeProduct);
 
 // Fallback
 router.use((req, res) => {

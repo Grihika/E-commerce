@@ -241,7 +241,7 @@
                             checked
                         >
 
-                         Credit / Debit Card
+                        Credit / Debit Card
 
                     </label>
 
@@ -253,7 +253,7 @@
                             value="upi"
                         >
 
-                         UPI Payment
+                        UPI Payment
 
                     </label>
 
@@ -271,46 +271,33 @@
 
                 </div>
 
-                <!-- Card -->
-
+                <!-- Card Details (with required) -->
                 <div id="card-details">
 
-                    <div class="form-field">
+                    <input
+                        type="text"
+                        id="card-number"
+                        placeholder="Card Number"
+                        required
+                    >
+
+                    <div class="form-row">
+
                         <input
                             type="text"
-                            id="card-number"
-                            placeholder="Card Number"
-                            inputmode="numeric"
-                            autocomplete="cc-number"
-                            maxlength="19"
+                            id="expiry"
+                            placeholder="MM/YY"
+                            required
                         >
                         <small class="field-error" id="card-number-error"></small>
                     </div>
 
-                    <div class="form-row">
-
-                        <div class="form-field">
-                            <input
-                                type="text"
-                                id="expiry"
-                                placeholder="MM/YY"
-                                autocomplete="cc-exp"
-                                maxlength="5"
-                            >
-                            <small class="field-error" id="expiry-error"></small>
-                        </div>
-
-                        <div class="form-field">
-                            <input
-                                type="password"
-                                id="cvv"
-                                placeholder="CVV"
-                                inputmode="numeric"
-                                autocomplete="cc-csc"
-                                maxlength="4"
-                            >
-                            <small class="field-error" id="cvv-error"></small>
-                        </div>
+                        <input
+                            type="password"
+                            id="cvv"
+                            placeholder="CVV"
+                            required
+                        >
 
                     </div>
 
